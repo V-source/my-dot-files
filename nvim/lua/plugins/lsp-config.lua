@@ -36,32 +36,47 @@ return {
       --   capabilities = capabilities,
       --
       --   init_options = {
-      --     filetypes = { 'javascriptreact' },
+      --     filetypes = { 'javascriptreact', 'javascript' },
       --     preferences = {
       --       disableSuggestions = true,
       --     }
       --   }
       -- })
 
+      local status = pcall(require, "lspconfig")
+      if (not status) then return end
+
+
       lspconfig.tsserver.setup({
         capabilities = capabilities,
+        -- recuerda que borraste el package.json de la lista por errores de nvim que molestan la visual al abrir un archivo .json
+        root_pattern = { "tsconfig.json", "jsconfig.json", ".git" },
         init_options = {
-          filetypes = { 'javascriptreact', 'astro' },
+          cmd = { "typescript-language-server", "--stdio" },
+
+          filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx"},
           preferences = {
             disableSuggestions = true,
-          }
-        }
+          },
+        },
+
       })
 
-      lspconfig.astro_ls.setup({
-        capabilities = capabilities,
-        init_options = {
-          filetypes = { 'astro' },
-          preferences = {
-            disableSuggestions = false,
-          }
-        }
-      })
+      -- Configuración de eslint
+      -- lspconfig.eslint.setup({
+      --   capabilities = capabilities,
+      -- })
+
+
+      -- lspconfig.astro_ls.setup({
+      --   capabilities = capabilities,
+      --   init_options = {
+      --     filetypes = { 'astro' },
+      --     preferences = {
+      --       disableSuggestions = false,
+      --     }
+      --   }
+      -- })
 
       -- lspconfig.mdx_ls.setup({
       --   capabilities = capabilities,
@@ -81,23 +96,23 @@ return {
       --   settings = {},
       -- })
 
-      -- lspconfig.html.setup({
-      --   capabilities = capabilities,
-      --   filetypes = {"html", "jsx", "javascriptreact"}
-      -- })
+      lspconfig.html.setup({
+        capabilities = capabilities,
+        filetypes = { "html", "jsx", "javascriptreact", "tsx", 'typescriptreact' }
+      })
 
       lspconfig.emmet_ls.setup({
         capabilities = capabilities,
-        filetypes = { 'css', 'html', "javascriptreact", "astro" },
+        filetypes = { 'css', 'html', "javascriptreact", "astro", 'typescriptreact', 'typescriptreact', 'tsx' },
       })
 
-      lspconfig.sqlls.setup({
-        capabilities = capabilities,
-        filetypes = { 'sql', 'mysql' },
-      })
+      -- lspconfig.sqlls.setup({
+      --   capabilities = capabilities,
+      --   filetypes = { 'sql', 'mysql' },
+      -- })
 
-      -- vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
-      vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
+      vim.keymap.set("n", "<leader>k", vim.lsp.buf.hover, {})
+      vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
       vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
     end,
   },

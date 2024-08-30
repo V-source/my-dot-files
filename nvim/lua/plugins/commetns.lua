@@ -1,15 +1,43 @@
 return {
+  -- {
+  --   'numToStr/Comment.nvim',
+  --   config = function()
+  --     local ft = require('Comment.ft')
+  --     require('Comment').setup({
+  --       filetypes = { 'javascriptreact', 'javascript', 'react', 'jsx', 'html', 'css', 'typescriptreact' },
+  --     })
+  --
+  --
+  --       --1. Using method signature
+  --       -- Set only line comment or both
+  --       -- You can also chain the set calls
+  --       -- ft.set('javascript', {'{/*%s*/}','//%s', '/*%s*/' })
+  --     ft.javascriptjsx = {'{/*%s*/}'}
+  --
+  --       -- 2. Metatable magic
+  --
+  --       -- 3. Multiple filetypes
+  --   end,
+  --   lazy = false,
+  -- },
   {
     'numToStr/Comment.nvim',
+    dependencies = {
+      'JoosepAlviste/nvim-ts-context-commentstring',
+    },
 
     config = function()
-      require('Comment').setup({
-        filetypes = { 'javascriptreact', 'javascript', 'jsx', 'html', 'css', 'typescriptreact' }
-      })
+      require('ts_context_commentstring').setup {
+        enable_autocmd = false,
+      }
+      require('Comment').setup {
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      }
     end,
-    lazy = false,
+
   },
   {
+
     "LudoPinelli/comment-box.nvim",
     config = function()
       require('comment-box').setup()
@@ -61,7 +89,7 @@ return {
 -- │ using blockwise comment                                 │
 -- └                                                         ┘
 -- ┌─────────────────────────────────────────────────────────┐
---   EXTRA MAPPINGS                                          
+--   EXTRA MAPPINGS
 -- └─────────────────────────────────────────────────────────┘
 -- ┌                                                         ┐
 -- │ gco` - Insert comment to the next line and enters       │
@@ -78,5 +106,5 @@ return {
 -- │ gc` - Toggles the region using linewise comment         │
 -- │ gb` - Toggles the region using blockwise comment        │
 -- └                                                         ┘
---  
+--
 --

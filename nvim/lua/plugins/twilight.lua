@@ -2,13 +2,13 @@ return {
   'folke/twilight.nvim',
   opts = {
     dimming = {
-      alpha = 0.25,
+      alpha = 0.35,
       color = {"normal", "#ffffff"},
       term_bg = "#000000",
-      inactive = false,
+      inactive = true,
 
     },
-    context = 10,
+    context = 40,
     treesitter = true,
     expand = {
       "function",
@@ -18,5 +18,5 @@ return {
     },
     exclude = {}
   },
-  vim.keymap.set('n', '<leader>focus', '<cmd>Twilight<CR>',{silent = true})
+  -- vim.keymap.set('n', '<leader>zen', '<cmd>Twilight<CR>',{silent = true})
 }

@@ -40,12 +40,13 @@ return {
           documentation = cmp.config.window.bordered(), --edited
         },
         mapping = cmp.mapping.preset.insert({
-          -- ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          -- ["<C-f>"] = cmp.mapping.scroll_docs(4),
+          ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-u>"] = cmp.mapping.scroll_docs(4),
           -- ["<CR>"] = cmp.mapping.confirm({ select = true }),
           ["<C-\\>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+          ['<C-o>'] = cmp.mapping.confirm({ select = true }),
+          -- ['<C-l>'] = cmp.mapping.confirm({ select = true }),
           -- los siguientes mappings los encontré en:
           -- https://vonheikemen.github.io/devlog/es/tools/setup-nvim-lspconfig-plus-nvim-cmp/
           ['<Tab>'] = cmp.mapping(function(fallback)

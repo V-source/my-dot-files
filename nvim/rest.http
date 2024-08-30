@@ -1,0 +1,7 @@
+# @name=obten-datos
+GET https://api.restful-api.dev/objects
+
+### esta linea de 3 # es necesaria
+
+# @name=google
+GET https://www.google.com

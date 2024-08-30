@@ -17,18 +17,197 @@ local m = require("luasnip.extras").m
 local l = require("luasnip.extras").l
 local postfix = require("luasnip.extras.postfix").postfix
 
+-- Función para formatear el contenido del snippet
+ls.filetype_extend('javascriptreact', { "typescriptreact" })
+
+ls.add_snippets('all', {
+  s("// _c", fmt([[
+ // _c ::> {text}
+  ]], { text = i(0) }))
+})
 
 ls.add_snippets("javascript", {
+  -- ╭─────────────────────────────────────────────────────────╮
+  -- │ FORM VALIDATORS                                         │
+  -- ╰─────────────────────────────────────────────────────────╯
+  s("validators", fmt([[
+export function isEmpty(arg) {{ return arg === ""}}
+
+export function isEmail(arg) {{
+  const regexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{{2,4}}$/
+  return regexEmail.test(arg)
+}}
+
+export function isPassword(arg) {{
+  const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&#.$($)$-$_])[A-Za-z\d$@$!%*?&#.$($)$-$_]{{8,15}}$/;
+  return regexPassword.test(arg)
+}}
+  ]], {})),
+
+  --   ──────────────────────────────────────────────────────────────────────
+  -- ╭─────────────────────────────────────────────────────────╮
+  -- │ MONGODB CONNECTION                                      │
+  -- ╰─────────────────────────────────────────────────────────╯
+  s("mongodb", fmt([[
+import {{ connect }} from "mongoose";
+
+async function initDb() {{
+    console.log("conectando con la base de dato. por favor espere");
+    try {{
+      const db = await connect("mongodb://127.0.0.1:27017/{dbname}", {{
+        serverSelectionTimeoutMS: 30000,
+      }});
+
+      console.log(`conectado a la base de datos: ${{db.connection.name}}`);
+
+    }} catch (error) {{
+      console.log("ha ocurrido un error inesperado, vuelva a intentarlo");
+      console.log(error);
+    }}
+  }}
+
+export default initDb;
+  ]], { dbname = i(0) })),
+
+  --   ──────────────────────────────────────────────────────────────────────
+  -- ╭─────────────────────────────────────────────────────────╮
+  -- │ ELECTRON INITAL CONF                                    │
+  -- ╰─────────────────────────────────────────────────────────╯
+  s("electron", fmt([[
+const {{app, BrowserWindow}} = requier('electron')
+
+app.disableHardwareAcceleration()
+app.enableSandbox()
+
+const isSingleInstance = app.requestSingleInstanceLock()
+
+if(!isSingleInstance) {{
+  app.quit()
+  process.exit(0)
+}}
+
+let mainwindow = null
+
+app.on('ready', async () => {{
+  console.log('electron is running')
+
+  mainwindow = new BrowserWindow({{
+    show: false,
+  }})
+
+  mainwindow.on('ready-to-show', () => {{
+    mainwindow.show()
+  }})
+
+  await mainwindow.{a}
+
+}})
+
+
+app.on('window-all-closed', () => {{
+  if(process.platform !== 'darwin') app.quit()
+}})
+
+
+app.on('second-instance', () => {{
+  if(mainwindow) {{
+    if(mainwindow.isMinimized()) {{
+      mainwindow.restore()
+    }} else {{
+      mainwindow.focus()
+
+    }}
+  }}
+}})
+  ]], { a = i(0) })),
+
+  --  ── MONGO QUERYS ────────────────────────────────────────────────────
+  s("findOne: Custom Mongo query", fmt([[
+async function findOne(Schema, obj) {{
+ try {{
+    const data = await Schema.findOne(obj);
+    if (!data) {{
+      throw new Error('No existe el registro');
+    }}
+    return {{data: data}};
+ }} catch (error) {{
+    return {{error: error}};
+ }}
+}}
+  ]],
+    {}
+  )),
+  s('log', fmt([[
+  console.log({d})
+]], { d = i(0) })),
+
+  --  ── MONGO FEEDER ────────────────────────────────────────────────────
+  s("db feeder", fmt(
+    [[
+
+export const userFeeder = async () => {{
+  adminSeed.map(async (e) => feeder({SchemaName}, e))
+}};
+
+async function feeder(Schema, seed) {{
+    try {{
+      const existsUser = await Schema.findOne({{ email: seed.email }});
+      if (!existsUser) {{
+        {logic}
+        }}
+
+        const user = await newUser.save();
+        return user;
+      }}
+    }} catch (error) {{
+    if(error.name == 'ValidationError'){{
+      return console.error(error.message)
+    }}
+      console.error(`Error al crea nuevo socio de prueba: ${{error.message}}`);
+      throw error;
+    }}
+}}
+   ]],
+    { SchemaName = i(1), logic = i(0) }
+  )),
+
+  --  ── TOKEN CREATOR ───────────────────────────────────────────────────
+  s("create token", fmt(
+    [[
+      import jwt from 'jsonwebtoken';
+
+      const tsk = process.env.TOKEN_SECRET;
+
+
+      export function createToken(id) {{
+        const token = jwt.sign({{userId: id}}, tsk, {{expiresIn: '18h'}})
+        return token
+      }}
+    ]],
+    {}
+  )),
+
+  --  ── TERNARY ─────────────────────────────────────────────────────────
   s("ternary", {
     -- equivalent to "${1:cond} ? ${2:then} : ${3:else}"
     i(1, "cond"), t(" ? "), i(2, "then"), t(" : "), i(3, "else")
   }),
-  s("arf", {
+
+  --  ── ARROW FUNCIONT ──────────────────────────────────────────────────
+  --[[ s("arf", {
     t("("), i(1), t(") => "), i(0, "body")
-  }),
+  }), ]]
+
+  s('arf', fmt([[
+    ({param}) => {{{logic}}}
+  ]], { param = i(1), logic = i(0) })),
+
+  --  ── ASYNC ARROW FUNCTION ────────────────────────────────────────────
   s("async arf", {
     t("async ()"), t({ " => {", "\t" }), i(0, "logic"), t { "", "}" }
   }),
+
+  --  ── ASYNC FUNCTION ──────────────────────────────────────────────────
   s("async func", {
     t("async function "),
     i(1, "fun_name"),
@@ -38,7 +217,7 @@ ls.add_snippets("javascript", {
     i(0, "logic"), t { "", "}" }
   }),
 
-
+  --  ── TRY CATCH ───────────────────────────────────────────────────────
   s("try", {
     t({ "try{ ", "\t" }),
     i(0),
@@ -46,17 +225,39 @@ ls.add_snippets("javascript", {
     t({ "", "}" }),
   }),
 })
+-- ──────────────────────────────────────────────────────────────────────
+-- ╭─────────────────────────────────────────────────────────╮
+-- │ REACT SNIPPETS                                          │
+-- ╰─────────────────────────────────────────────────────────╯
 ls.add_snippets("javascriptreact", {
-  -- s("example3", fmt([[
-  -- if <> then
-  --   <>
-  -- end
-  -- ]], {
-  --   -- i(1) is at nodes[1], i(2) at nodes[2].
-  --   i(1, "not now"), i(2, "when")
-  -- }, {
-  --   delimiters = "<>"
-  -- })),
+  s("useFethc", fmt([[
+import {{ useState, useEffect }} from "react";
+
+export const useFetch = (url, opts) => {{
+  const [data, setData] = useState(null);
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
+  useEffect(() => {{
+    const fetchData = async () => {{
+      setIsPending(true);
+      try {{
+        const response = await fetch(url, opts);
+        if (!response.ok) throw new Error(response.statusText);
+        const json = await response.json();
+        setIsPending(false);
+        setData(json);
+        setError(null);
+      }} catch (error) {{
+        setError(`${{error}} Ocurrión un error inesperado `);
+        setIsPending(false);
+      }}
+    }};
+    fetchData();
+  }}, [url]);
+  return {{ data, isPending, error }};
+}};
+  ]], {})),
+  --  ── REACT FUNCTIONAL COMPONENT ──────────────────────────────────────
   s("sfc", fmt([[
   function {a}() {{
     return(
@@ -64,30 +265,59 @@ ls.add_snippets("javascriptreact", {
     )
   }}
   export default {a}
-  ]], {
-    a = i(1), b = i(2)
-  }, {
-    repeat_duplicates = true
-  })),
-  s("component", fmt(
+  ]],
+    { a = i(1), b = i(2) },
+    { repeat_duplicates = true }
+  )),
+
+
+
+
+
+  --  ── COMPONENT AUTO CLOSE ────────────────────────────────────────────
+  s("comp", fmt(
     [[
     <{componentname} />
     ]],
     { componentname = i(0) }
+  )),
+  --  ── COMPONENT CLOSE TAG ─────────────────────────────────────────────
+  s("comp1", fmt(
+    [[
+    <{componentname} >
+    </{componentname}>
+    ]],
+    { componentname = i(0) },
+    { repeat_duplicates = true }
+  )),
+  --  ── REACT NATIVE FUNCTIONAL COMPONENT ───────────────────────────────
+  s('rnfc', fmt(
+    [[
+    import {{ View, Text, StyleSheet }} from 'react-native'
+    export default function {a}() {{
+      return(
+        {b}
+      )
+    }}
+    ]]
+    , { a = i(1), b = i(0) }
   ))
 })
 
-
+-- ╭─────────────────────────────────────────────────────────╮
+-- │ JAVASCRIPT SNIPPETS                                     │
+-- ╰─────────────────────────────────────────────────────────╯
 ls.add_snippets("javascript", {
+  --  ── EXPRESS METHOD ──────────────────────────────────────────────────
   s("expressMethod", fmt(
     [[
-    .{method}('{url}', {async} (req, res) => {{
+    {method}('{url}', {async} (req, res) => {{
       res.json({{msg: '{response}'}})
     }})
   ]],
-    { method = i(1), url = i(2), async = i(3), response = i(0) }
+    { method = i(1), url = i(2),  async = i(3), response = i(0) }
   )),
-
+  --  ── EXPRESS ROUTER ──────────────────────────────────────────────────
   s("expressRouter", fmt(
     [[
     import {{ Router }} from 'express'
@@ -105,11 +335,13 @@ ls.add_snippets("javascript", {
     { routerName = i(1), method = i(2), url = i(3), async = i(4), response = i(0) },
     { repeat_duplicates = true }
   )),
+  --  ── MONGOOSE SCHEMA ─────────────────────────────────────────────────
   s("schema", fmt(
     [[
-    import {{ Schema, model }} from 'mongoose'
+    {import}
 
-    const {schemaName} = new Schema(
+
+    const {schemaName}Schema = new Schema(
       {{
         {props}
       }},
@@ -120,32 +352,25 @@ ls.add_snippets("javascript", {
     );
 
 
-    export default model("{modelName}", {schemaName})
+    export const {schemaName}Model = model("{schemaName}", {schemaName}Schema)
     ]],
-    { schemaName = i(1), props = i(0), modelName = i(2) },
+    { import = i(1, 'import { Schema, model } from "mongoose"'), schemaName = i(2), props = i(0), --[[ modelName = i(2) ]] },
     { repeat_duplicates = true }
   )),
-  s("export async const", fmt(
+
+  s("export const", fmt(
     [[
       export const {constname} = async ({params}) => {{{logic}}}
     ]],
     { constname = i(1), params = i(2), logic = i(0) }
   )),
 
-  s("trig", {
-    i(1), c(2, {
-    sn(nil, { i(1),
-      t "can access the argnode :)",
-      f(function(args)
-        return args[1]
-      end, ai(1))
-    }),
-    t "sample_text"
-  })
-  })
+
 })
 
-
+-- ╭─────────────────────────────────────────────────────────╮
+-- │ ASTRO SNIPPETS                                          │
+-- ╰─────────────────────────────────────────────────────────╯
 ls.add_snippets("astro", {
   s('import', fmt(
     [[
@@ -154,10 +379,4 @@ ls.add_snippets("astro", {
     { functionality = i(1), module = i(0) }
   ))
 })
--- ls.add_snippets("astro", {
---   s("ternary", fmt(
---     [[
---     import {fun} from '{module}'
---     ]]
---   )),
--- })
+

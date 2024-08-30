@@ -34,7 +34,7 @@ return {
 
 			return project_name
 		end
-		local global_dir = "/home/ElvisVillegas/code/.notes"
+		local global_dir = "/home/ElvisVillegas/git/.notes"
 		return {
 			autosave = false,
 			directory = global_dir,
