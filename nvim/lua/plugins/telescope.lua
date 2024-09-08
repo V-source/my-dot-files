@@ -6,20 +6,23 @@ return {
     config = function()
       require('telescope').setup({
         defaults = {
+          layout_strategy = "horizontal",
+          layout_config = { prompt_position = "top" },
+          sorting_strategy = "ascending",
           path_display = { 'truncate' },
           file_ignore_patterns = { "node_modules/*" },
           preview = {
             treesitter = false,
           },
-          layout_config = {
-            preview_width = .5,
-            horizontal = {
-              size = {
-                width = "90%",
-                height = "90%",
-              },
-            },
-          },
+          -- layout_config = {
+          --   preview_width = 0.5,
+          --   horizontal = {
+          --     size = {
+          --       width = "90%",
+          --       height = "90%",
+          --     },
+          --   },
+          -- },
         },
         -- pickers = {
         --   find_files = {
@@ -55,7 +58,7 @@ return {
       -- para ver un listado de todos los nombres de variables
       -- y funciones desde treestter.
       -- util para buscar una funcion, constante, variables, parametros
-      -- vim.keymap.set('n', '<leader>ft', builtin.treesitter, {})
+      vim.keymap.set('n', '<leader>ts', builtin.treesitter, {})
 
 
       -- ╭─────────────────────────────────────────────────────────╮

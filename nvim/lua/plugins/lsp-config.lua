@@ -54,7 +54,7 @@ return {
         init_options = {
           cmd = { "typescript-language-server", "--stdio" },
 
-          filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx"},
+          filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
           preferences = {
             disableSuggestions = true,
           },
@@ -87,29 +87,35 @@ return {
       --     }
       --   }
       -- })
-
-      -- lspconfig.astro_ls.setup({
-      --   capabilities = capabilities,
-      --   cmd = { "astro-language-server", "--stdio" },
-      --   filetypes = { "astro" },
-      --   root_dir = lspconfig.util.root_pattern(".git", "package.json"),
-      --   settings = {},
-      -- })
+      lspconfig.astro_ls.setup({
+        capabilities = capabilities,
+        cmd = { "astro-language-server", "--stdio" },
+        filetypes = { "astro" },
+        root_dir = lspconfig.util.root_pattern(".git", "package.json", "astro.config.*"),
+        settings = {},
+      })
 
       lspconfig.html.setup({
         capabilities = capabilities,
-        filetypes = { "html", "jsx", "javascriptreact", "tsx", 'typescriptreact' }
+        filetypes = { "html", "jsx", "javascriptreact", "tsx", 'typescriptreact', "astro" }
       })
 
       lspconfig.emmet_ls.setup({
         capabilities = capabilities,
-        filetypes = { 'css', 'html', "javascriptreact", "astro", 'typescriptreact', 'typescriptreact', 'tsx' },
+        filetypes = { "astro", "html", "css", "javascriptreact", "typescriptreact", "javascript", "typescript" },
       })
 
       -- lspconfig.sqlls.setup({
       --   capabilities = capabilities,
       --   filetypes = { 'sql', 'mysql' },
       -- })
+
+      -- Configuración de markdown con marksman
+      lspconfig.marksman.setup({
+        capabilities = capabilities,
+        filetypes = { "markdown" },
+        root_dir = lspconfig.util.root_pattern(".git", "README.md"),
+      })
 
       vim.keymap.set("n", "<leader>k", vim.lsp.buf.hover, {})
       vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
