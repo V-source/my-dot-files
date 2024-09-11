@@ -10,9 +10,11 @@ return {
       indent = { enable = true },
     })
   end,
+
   vim.filetype.add({
     extension = {
-      astro = ".astro"
+      astro = "astro"
     }
-  })
+  }),
+vim.treesitter.language.register("markdown", "mdx")
 }

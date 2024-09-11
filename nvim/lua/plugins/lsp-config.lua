@@ -54,7 +54,7 @@ return {
         init_options = {
           cmd = { "typescript-language-server", "--stdio" },
 
-          filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+          filetypes = { "astro","javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
           preferences = {
             disableSuggestions = true,
           },
@@ -68,15 +68,6 @@ return {
       -- })
 
 
-      -- lspconfig.astro_ls.setup({
-      --   capabilities = capabilities,
-      --   init_options = {
-      --     filetypes = { 'astro' },
-      --     preferences = {
-      --       disableSuggestions = false,
-      --     }
-      --   }
-      -- })
 
       -- lspconfig.mdx_ls.setup({
       --   capabilities = capabilities,
@@ -87,13 +78,15 @@ return {
       --     }
       --   }
       -- })
-      lspconfig.astro_ls.setup({
-        capabilities = capabilities,
-        cmd = { "astro-language-server", "--stdio" },
-        filetypes = { "astro" },
-        root_dir = lspconfig.util.root_pattern(".git", "package.json", "astro.config.*"),
-        settings = {},
-      })
+      --
+      --
+      -- lspconfig.astro_ls.setup({
+      --   capabilities = capabilities,
+      --   cmd = { "astro-language-server", "--stdio" },
+      --   filetypes = { "astro" },
+      --   root_dir = lspconfig.util.root_pattern(".git", "package.json", "astro.config.*"),
+      --   settings = {},
+      -- })
 
       lspconfig.html.setup({
         capabilities = capabilities,

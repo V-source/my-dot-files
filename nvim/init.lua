@@ -22,4 +22,4 @@ vim.opt.rtp:prepend(lazypath)
 -- local opts = {}
 require("config")
 require("lazy").setup("plugins")
-
+require("lspconfig").astro.setup({})
