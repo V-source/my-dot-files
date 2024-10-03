@@ -16,6 +16,7 @@ return {
     require("todo-comments").setup({
       keywords = {
         FIX = { icon = " ", color = "error", alt = { "fix", "FIXME", "BUG", "FIXIT", "ISSUE" } },
+
         -- TODO = { icon = " ", color = "info", alt = { "TASK", "todo" } },
         TODO = { icon = "◻ ", color = "info", alt = { "TASK", "todo" } },
         HACK = { icon = " ", color = "warning" },
@@ -24,7 +25,8 @@ return {
         NOTE = { icon = "👓", color = "hint", alt = { "INFO", 'note' } },
         TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
         DONE = { icon = "✔ ", color = "#A7BFE3", alt = { "COMPLETED", "done" } },
-        _c = { icon = "✒ ", color = "#AAAAAA", alt = { "_C", "comment", "::> " } },
+        comment  = { icon = "✒ ", color = "#AAAAAA", alt = { "_C", "comment", " ❱❱ " } },
+        NOW = { icon = "☉", color = "#b15065", alt = { "_f", "onWork", "on_work" } },
       },
 
       gui_style = {
@@ -33,8 +35,8 @@ return {
       },
       merge_keywords = true,             -- when true, custom keywords will be merged with the defaults
       highlight = {
-        multiline = true,                -- enable multine todo comments
         multiline_pattern = "^.",        -- lua pattern to match the next multiline from the start of the matched keyword
+        multiline = true,                -- enable multine todo comments
         multiline_context = 10,          -- extra lines that will be re-evaluated when changing a line
         before = "",                     -- "fg" or "bg" or empty
         keyword = "wide",                -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty.
@@ -56,6 +58,11 @@ return {
 
       },
     })
+
+    -- telescope.
+    vim.keymap.set('n', "<leader>tc", ':TodoTelescope<CR>',{silent= true})
+    vim.keymap.set('n', "<leader>tr", ':TodoTrouble<CR>',{silent= true})
+
     -- : cambiar el atajo de teclado
     vim.keymap.set("n", "]t", function()
       require("todo-comments").jump_next()
