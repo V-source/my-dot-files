@@ -61,8 +61,8 @@ return {
 
     -- Definición de la función Lazygit_toggle
     -- Configuración de mapeos de teclas
-    vim.keymap.set('n', '<leader>ht', '<cmd>ToggleTerm direction=horizontal <cr>', {}),
-    -- vim.keymap.set('n', '<leader>vt', '<cmd>ToggleTerm direction=vertical <cr>', {}),
+    -- vim.keymap.set('n', '<leader>ht', '<cmd>ToggleTerm direction=horizontal <cr>', {}),
+    vim.keymap.set('n', '<leader>vt', '<cmd>ToggleTerm direction=vertical <cr>', {}),
     -- vim.keymap.set('n', '<leader>ft', '<cmd>ToggleTerm direction=float <cr>', {}),
     -- vim.keymap.set('n', '<leader>tt', '<cmd>ToggleTerm direction=tab <cr>', {}),
     vim.keymap.set('n', '<leader>tt', '<cmd>ToggleTerm <cr>', {}),
